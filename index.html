@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navira Bau GmbH</title>
+    <style>
+        /* Main page styling */
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            /* Ensure body covers at least the viewport height */
+            display: flex;
+            flex-direction: column;
+            /* Stack sections vertically */
+            font-family: sans-serif;
+            background-color: #0061b7;
+            /* Default background for the first section */
+        }
+
+        html {
+            height: 100%;
+        }
+
+        /* Blue Intro Section */
+        #intro-section {
+            width: 100%;
+            height: 100vh;
+            /* Full viewport height for intro */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #0061b7;
+        }
+
+        /* Container for logo and slogan to ensure alignment */
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Center horizontally */
+        }
+
+        /* Logo styling and initial state */
+        #logo-container {
+            width: 500px;
+            height: 150px;
+            display: block;
+            /* Initial state: Invisible, blurred, and shifted left */
+            opacity: 0;
+            transform: translateX(-50px);
+             filter: blur(15px);
+            /* Transition for initial loading (controlled by .visible) */
+            transition: all 1.5s ease-out;
+            transition-delay: 0.5s;
+        }
+
+        /* Logo animated state - controlled by JS */
+        #logo-container.visible {
+            /* Final state: Visible, clear, in original position */
+            opacity: 1;
+            transform: translateX(0);
+            filter: blur(0);
+            /* NEW: Override animation to use transitions */
+            animation: none;
+        }
+
+        /* * CSS rule for path fill removed, as it's now set inline in the SVG paths.
+         */
+
+        /* Slogan styling and initial state */
+        #slogan {
+            color: #ffffff;
+            font-size: 1.25em;
+            font-weight: 300;
+            text-align: center;
+            /* Initial state for slogan */
+            opacity: 0;
+            transform: translateY(30px);
+            filter: blur(0);
+            /* Transition for initial loading (controlled by .visible) */
+            transition: all 1.5s ease-out;
+            transition-delay: 0s;
+            margin-top: 10px;
+            max-width: 500px;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+        }
+
+        /* Slogan animated state */
+        #slogan.visible {
+            /* Final state for slogan */
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+
+        /* Initial state for title and paragraph */
+        .section-title,
+        .section-paragraph {
+            opacity: 0;
+            filter: blur(15px);
+            transition: opacity 1s ease-out, filter 1s ease-out;
+            /* Smooth transition */
+        }
+
+        /* State when visible after scroll (Title/Paragraph) */
+        .show-content {
+            opacity: 1;
+            filter: blur(0);
+        }
+
+        /* Initial state for service items (images and text) */
+        .service-item {
+            opacity: 0;
+            transform: scale(0.8);
+            /* Slightly zoomed out */
+            transition: opacity 1.5s ease-out, transform 1.5s ease-out;
+        }
+
+        /* State when visible after scroll (Zoom In to normal size) */
+        .service-item.show-content {
+            opacity: 1;
+            transform: scale(1);
+            /* Zoom in to original size */
+        }
+
+        /* Class for fade out on scroll */
+        #logo-container.scrolled-up {
+            transform: translateY(-200px);
+             opacity: 0;
+            filter: blur(10px);
+            transition-delay: 0s;
+        }
+
+        #slogan.scrolled-up {
+            transform: translateY(-200px);
+            opacity: 0;
+            filter: blur(10px);
+            transition-delay: 0.5s;
+        }
+
+        /* ------------------- NEW SECTION STYLES ------------------- */
+        /* Gray Services Section */
+        #services-section {
+            background-color: #f5f5f5;
+            /* Light gray background */
+            width: 100%;
+            padding: 60px 0;
+            /* Vertical padding */
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 1200px;
+            /* Max width for content on large screens */
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            color: #111111;
+            text-align: center;
+            font-size: 3em;
+            /* Larger font size */
+            font-weight: 700;
+            /* Bolder font weight (bold) */
+            margin-bottom: 20px;
+        }
+
+        .section-paragraph {
+            color: #111111;
+            text-align: justify;
+            text-align-last: justify;
+            margin: 0 auto 40px;
+            max-width: 700px;
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+
+        /* Grid for Service Images (2 rows of 3) */
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            /* 3 columns by default */
+            gap: 30px;
+            /* Space between items */
+            margin-top: 30px;
+        }
+
+        .service-item {
+            text-align: center;
+        }
+
+        .image-placeholder {
+            width: 100%;
+            padding-top: 60%;
+            /* Aspect ratio for images (e.g., 5:3) */
+            background-color: #cccccc;
+            /* Placeholder color for images */
+            border-radius: 0px;
+            margin-bottom: 10px;
+        }
+
+        .service-title {
+            color: #111111;
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        /* ------------------- FOOTER STYLES ------------------- */
+        #site-footer {
+            background-color: #111111;
+            color: #ffffff;
+            padding: 50px 0; /* Vertical padding */
+            width: 100%;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            flex-wrap: wrap;
+            gap: 35px;
+        }
+
+        .footer-left-placeholder {
+            display: none;
+        }
+
+        .footer-center-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .footer-logo #logo-svg-footer {
+            height: 70px;
+            width: auto;
+        }
+
+        .footer-copyright {
+            font-size: 0.95em;
+            color: #ffffff;
+            text-align: center;
+        }
+
+        .footer-copyright p {
+            margin: 0;
+        }
+
+        .footer-links {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .footer-links nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .footer-links nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.9em;
+            position: relative;
+            padding-bottom: 5px;
+        }
+
+        .footer-links nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: #ffffff;
+            transform: scaleX(0);
+            transform-origin: center;
+            transition: transform 0.3s ease-out;
+        }
+
+        .footer-social-links {
+            display: flex;
+             justify-content: center;
+            gap: 25px; /* Space between icons */
+            width: 100%;
+            margin-top: 25px;
+        }
+
+        .footer-social-links a {
+            color: #ffffff; /* Set icon color to white */
+            opacity: 1;
+            transition: opacity 0.3s ease-out; /* For smooth hover animation */
+        }
+
+        .footer-social-links a:hover {
+            opacity: 0.5; /* 50% opacity on hover */
+        }
+
+        .footer-social-links svg {
+            width: 28px; /* Icon size */
+            height: 28px; /* Icon size */
+        }
+
+        .footer-links nav a:hover::after {
+            transform: scaleX(1);
+        }
+
+        /* =================================== */
+        /* Scroll-to-top Button Styles */
+        /* =================================== */
+        #scrollToTopBtn {
+            display: none; /* Hidden by default */
+            position: fixed; /* Keep it in the viewport */
+            bottom: 30px; /* Distance from bottom */
+            right: 30px; /* Distance from right */
+            z-index: 1000; /* Ensure it's on top of other content */
+            border: none;
+            outline: none;
+            background-color: #111111; /* Dark background to match footer */
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 0%; /* Make it circular */
+            width: 50px;
+            height: 50px;
+            opacity: 0; /* Start invisible for fade-in effect */
+            transform: translateY(20px); /* Start slightly lower for slide-in effect */
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out; /* Smooth transitions */
+        }
+
+        #scrollToTopBtn.visible {
+            display: block; /* Make it visible */
+            opacity: 0.3; /* 30% opacity as requested */
+            transform: translateY(0); /* Move to final position */
+        }
+
+        #scrollToTopBtn:hover {
+            opacity: 1; /* 100% opacity on hover */
+        }
+
+        #scrollToTopBtn svg {
+            width: 100%;
+            height: 100%;
+            fill: #f5f5f5; /* SVG arrow color (light gray) */
+        }
+
+        /* Tooltip text styling */
+        #scrollToTopBtn .tooltip-text {
+            visibility: hidden; /* Hidden by default */
+            width: 100px; /* Fixed width for the tooltip */
+            background-color: #111111;
+            color: #fff;
+            text-align: center;
+            border-radius: 0px;
+            padding: 5px 0;
+            position: absolute; /* Position relative to the button */
+            z-index: 1;
+            bottom: 125%; /* Position above the button */
+            left: 50%;
+            margin-left: -50px; /* Center the tooltip */
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        /* Show the tooltip on hover */
+        #scrollToTopBtn:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* ------------------- RESPONSIVE DESIGN ------------------- */
+        @media (max-width: 900px) {
+            .footer-content {
+                gap: 20px;
+            }
+
+            .footer-links nav {
+                flex: 1;
+                text-align: center;
+            }
+    }
+
+
+        @media (max-width: 600px) {
+
+            .container {
+                padding-left: 25px;
+                padding-right: 25px;
+                box-sizing: border-box;
+            }
+
+            /* Mobile devices: 1 column grid */
+            .image-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            /* Adjust logo size for mobile */
+            #logo-container {
+                width: 80%;
+                height: auto;
+            }
+
+            #logo-svg {
+                width: 100%;
+                height: auto;
+            }
+
+            #slogan {
+                font-size: 0.75em;
+            }
+
+            #intro-section {
+                height: 100vh;
+                /* Less height on small screens */
+            }
+            .footer-copyright {
+                font-size: 0.8em;
+            }
+
+            .footer-links nav a {
+                flex-basis: 50%;
+                box-sizing: border-box;
+            }
+
+            /* Increase spacing for scroll-to-top button on mobile */
+            #scrollToTopBtn {
+                bottom: 20px; /* Adjust distance from bottom */
+                right: 20px; /* Adjust distance from right */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="intro-section">
+        <div class="content-wrapper">
+            <div id="logo-container">
+                <svg id="logo-svg" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="500px" height="150px"
+                    viewBox="0 0 500 150" xml:space="preserve">
+                    <g>
+                        <path
+                            d="M151.92,8.9l25.59,32.17v-22.3c0-3.11-.45-5.21-1.34-6.31-1.22-1.48-3.28-2.19-6.16-2.14v-1.42h17.13v1.42c-2.19.28-3.67.64-4.42,1.09s-1.34,1.17-1.76,2.18-.63,2.73-.63,5.18v43.18h-1.3l-35.07-43.18v32.97c0,2.98.68,5,2.05,6.04s2.93,1.57,4.69,1.57h1.22v1.42h-18.4v-1.42c2.86-.03,4.84-.61,5.97-1.76s1.68-3.1,1.68-5.85V15.13l-1.11-1.38c-1.1-1.38-2.07-2.28-2.91-2.72s-2.05-.68-3.63-.73v-1.42h18.4Z"
+                            style="fill: #fff;" />
+                        <path
+                            d="M232.36,46h-18.32l-2.18,5.05c-.71,1.68-1.07,3.07-1.07,4.17,0,1.45.59,2.52,1.76,3.21.69.41,2.38.71,5.09.92v1.42h-17.25v-1.42c1.86-.28,3.39-1.05,4.59-2.31,1.2-1.26,2.68-3.87,4.44-7.82l18.55-41.38h.73l18.7,42.53c1.78,4.03,3.25,6.57,4.4,7.61.87.79,2.09,1.25,3.67,1.38v1.42h-25.09v-1.42h1.03c2.01,0,3.43-.28,4.25-.84.56-.41.84-.99.84-1.76,0-.46-.08-.93-.23-1.42-.05-.23-.43-1.19-1.15-2.87l-2.75-6.46ZM231.06,43.17l-7.73-17.86-7.96,17.86h15.68Z"
+                            style="fill: #fff;" />
+                        <path
+                            d="M312.8,8.9v1.42c-1.89.31-3.57,1.31-5.05,3.02-1.07,1.27-2.66,4.27-4.78,8.99l-17.86,39.62h-1.26l-17.78-41.23c-2.14-4.97-3.58-7.89-4.3-8.76s-2.1-1.42-4.11-1.64v-1.42h24.86v1.42h-.84c-2.24,0-3.77.28-4.59.84-.59.38-.88.94-.88,1.68,0,.46.1,1,.31,1.63s.89,2.3,2.07,5.03l11.05,25.82,10.25-22.99c1.22-2.78,1.98-4.64,2.26-5.58s.42-1.75.42-2.41c0-.76-.2-1.44-.61-2.03s-1.01-1.03-1.8-1.34c-1.1-.43-2.55-.65-4.36-.65v-1.42h17.02Z"
+                            style="fill: #fff;" />
+                        <path
+                            d="M353.08,59.34v1.42h-27.12v-1.42h1.72c1.5,0,2.72-.27,3.63-.8.66-.36,1.17-.97,1.53-1.84.28-.61.42-2.22.42-4.82V17.77c0-2.65-.14-4.31-.42-4.97s-.85-1.24-1.7-1.74-2.01-.75-3.46-.75h-1.72v-1.42h27.12v1.42h-1.72c-1.5,0-2.72.27-3.63.8-.66.36-1.19.97-1.57,1.84-.28.61-.42,2.22-.42,4.82v34.12c0,2.65.15,4.31.44,4.97s.87,1.24,1.72,1.74,2.01.75,3.46.75h1.72Z"
+                            style="fill: #fff;" />
+                        <path
+                            d="M386.48,37.12v14.53c0,2.8.17,4.57.52,5.3s.95,1.31,1.82,1.74c.87.43,2.49.65,4.86.65v1.42h-26.54v-1.42c2.4,0,4.02-.22,4.88-.67.85-.45,1.45-1.03,1.8-1.74s.52-2.47.52-5.28V18c0-2.8-.17-4.57-.52-5.3s-.95-1.31-1.82-1.74c-.87-.43-2.49-.65-4.86-.65v-1.42h24.1c6.27,0,10.86.43,13.77,1.3s5.28,2.47,7.11,4.8,2.75,5.07,2.75,8.2c0,3.82-1.38,6.99-4.13,9.49-1.76,1.58-4.22,2.77-7.38,3.56l12.47,17.56c1.63,2.27,2.79,3.68,3.48,4.25,1.05.79,2.26,1.22,3.63,1.3v1.42h-16.33l-16.71-23.64h-3.4ZM386.48,11.69v22.72h2.18c3.54,0,6.2-.33,7.96-.98s3.14-1.82,4.15-3.52c1.01-1.7,1.51-3.91,1.51-6.64,0-3.95-.92-6.87-2.77-8.76-1.85-1.89-4.83-2.83-8.93-2.83h-4.09Z"
+                            style="fill: #fff;" />
+                        <path
+                            d="M465.62,46h-18.32l-2.18,5.05c-.71,1.68-1.07,3.07-1.07,4.17,0,1.45.59,2.52,1.76,3.21.69.41,2.38.71,5.09.92v1.42h-17.25v-1.42c1.86-.28,3.39-1.05,4.59-2.31s2.68-3.87,4.44-7.82l18.55-41.38h.73l18.7,42.53c1.78,4.03,3.25,6.57,4.4,7.61.87.79,2.09,1.25,3.67,1.38v1.42h-25.09v-1.42h1.03c2.01,0,3.43-.28,4.25-.84.56-.41.84-.99.84-1.76,0-.46-.08-.93-.23-1.42-.05-.23-.43-1.19-1.15-2.87l-2.75-6.46ZM464.32,43.17l-7.73-17.86-7.96,17.86h15.68Z"
+                            style="fill: #fff;" />
+                        <path
+                            d="M149.3,92.27c1.68.36,2.93.93,3.77,1.71,1.15,1.1,1.73,2.43,1.73,4.02,0,1.2-.38,2.35-1.14,3.45s-1.81,1.9-3.13,2.41-3.35.76-6.08.76h-11.42v-.66h.91c1.01,0,1.74-.32,2.18-.96.27-.42.41-1.3.41-2.66v-15.64c0-1.5-.17-2.45-.52-2.84-.46-.52-1.15-.79-2.07-.79h-.91v-.66h10.46c1.95,0,3.52.14,4.69.43,1.78.43,3.15,1.19,4.09,2.28s1.41,2.34,1.41,3.76c0,1.21-.37,2.3-1.11,3.26s-1.83,1.67-3.27,2.13ZM139.95,91.31c.44.08.94.15,1.51.19s1.19.06,1.87.06c1.74,0,3.04-.19,3.92-.56s1.54-.95,2.01-1.72.7-1.62.7-2.53c0-1.42-.58-2.62-1.73-3.62s-2.84-1.5-5.05-1.5c-1.19,0-2.26.13-3.21.39v9.3ZM139.95,102.87c1.38.32,2.74.48,4.09.48,2.15,0,3.8-.48,4.93-1.45s1.7-2.17,1.7-3.6c0-.94-.26-1.84-.77-2.71s-1.35-1.55-2.5-2.05-2.58-.75-4.28-.75c-.74,0-1.37.01-1.89.04s-.95.07-1.27.12v9.92Z"
+                            style="fill: #fff;" />
+                        <path
+                            d="M193.99,96.52h-9.37l-1.64,3.82c-.41.94-.61,1.64-.61,2.11,0,.37.17.69.53.97.35.28,1.11.46,2.28.54v.66h-7.62v-.66c1.01-.18,1.67-.41,1.96-.7.61-.57,1.28-1.73,2.02-3.48l8.51-19.92h.62l8.42,20.13c.68,1.62,1.29,2.67,1.85,3.15s1.32.75,2.31.81v.66h-9.55v-.66c.96-.05,1.62-.21,1.95-.48s.51-.61.51-1c0-.52-.24-1.35-.71-2.48l-1.46-3.48ZM193.49,95.2l-4.11-9.78-4.21,9.78h8.32Z"
+                            style="fill: #fff;" />
+                        <path
+                            d="M241.57,81.08v-.66h8.57v.66h-.91c-.95,0-1.68.4-2.2,1.2-.25.37-.37,1.23-.37,2.57v9.82c0,2.43-.24,4.31-.72,5.65s-1.43,2.49-2.84,3.44-3.33,1.44-5.76,1.44c-2.64,0-4.65-.46-6.01-1.37-1.37-.92-2.34-2.15-2.91-3.69-.38-1.06-.57-3.05-.57-5.96v-9.46c0-1.49-.21-2.46-.62-2.93s-1.07-.7-1.99-.7h-.91v-.66h10.46v.66h-.93c-1,0-1.71.31-2.14.95-.3.43-.45,1.32-.45,2.68v10.55c0,.94.09,2.02.26,3.23.17,1.21.48,2.16.94,2.84.45.68,1.1,1.24,1.95,1.68.85.44,1.89.66,3.13.66,1.58,0,3-.35,4.25-1.04s2.1-1.57,2.56-2.65c.46-1.08.69-2.9.69-5.47v-9.8c0-1.51-.17-2.46-.5-2.84-.46-.52-1.16-.79-2.07-.79h-.91Z"
+                            style="fill: #fff;" />
+                        <path
+                            d="M346.8,79.87l.62,7.64h-.62c-.63-1.9-1.45-3.34-2.45-4.3-1.44-1.39-3.29-2.09-5.55-2.09-3.08,0-5.43,1.22-7.03,3.66-1.35,2.06-2.02,4.51-2.02,7.35,0,2.31.45,4.41,1.34,6.32s2.06,3.3,3.51,4.19,2.93,1.33,4.45,1.33c.89,0,1.76-.11,2.59-.34s1.64-.56,2.41-1v-7c0-1.21-.09-2.01-.28-2.38s-.47-.66-.86-.86-1.07-.29-2.04-.29v-.68h9.37v.68h-.45c-.93,0-1.56.31-1.91.93-.24.44-.36,1.31-.36,2.61v7.41c-1.37.74-2.72,1.28-4.05,1.62s-2.81.52-4.44.52c-4.68,0-8.23-1.5-10.66-4.5-1.82-2.25-2.73-4.84-2.73-7.78,0-2.13.51-4.17,1.53-6.12,1.21-2.32,2.88-4.11,5-5.35,1.77-1.04,3.87-1.55,6.28-1.55.88,0,1.68.07,2.4.21s1.74.46,3.06.95c.67.25,1.11.37,1.34.37s.42-.1.58-.31.26-.62.29-1.22h.66Z"
+                            style="fill: #fff;" />
+                        <path
+                            d="M377.23,91.27c1.19-1.19,1.89-1.87,2.11-2.05.54-.45,1.11-.8,1.73-1.05.62-.25,1.23-.37,1.84-.37,1.02,0,1.9.3,2.64.89.74.6,1.23,1.46,1.48,2.59,1.23-1.43,2.26-2.36,3.11-2.81.84-.45,1.71-.67,2.61-.67s1.64.22,2.31.67c.67.45,1.2,1.18,1.6,2.19.26.69.39,1.77.39,3.25v7.03c0,1.02.08,1.72.23,2.11.12.26.34.48.66.67s.84.28,1.57.28v.64h-8.07v-.64h.34c.7,0,1.25-.14,1.64-.41.27-.19.47-.49.59-.91.05-.2.07-.78.07-1.73v-7.03c0-1.33-.16-2.27-.48-2.82-.46-.76-1.21-1.14-2.23-1.14-.63,0-1.26.16-1.9.47-.64.31-1.41.9-2.31,1.76l-.04.2.04.77v7.8c0,1.12.06,1.81.19,2.09s.36.5.71.69c.34.18.93.28,1.77.28v.64h-8.26v-.64c.9,0,1.53-.11,1.87-.32s.57-.54.71-.96c.06-.2.09-.79.09-1.77v-7.03c0-1.33-.2-2.29-.59-2.87-.52-.76-1.26-1.14-2.2-1.14-.64,0-1.28.17-1.91.52-.99.52-1.75,1.11-2.28,1.77v8.76c0,1.07.07,1.77.22,2.09.15.32.37.56.66.72.29.16.88.24,1.78.24v.64h-8.09v-.64c.75,0,1.27-.08,1.57-.24.3-.16.52-.42.68-.77.15-.35.23-1.03.23-2.04v-6.25c0-1.8-.05-2.96-.16-3.48-.08-.39-.21-.66-.39-.81s-.42-.22-.73-.22c-.33,0-.73.09-1.2.27l-.27-.64,4.93-2h.77v3.48Z"
+                            style="fill: #fff;" />
+                        <path
+                            d="M425.75,91.09c1.58-2.2,3.29-3.3,5.12-3.3,1.68,0,3.14.72,4.39,2.15s1.87,3.39,1.87,5.88c0,2.9-.96,5.24-2.89,7.01-1.65,1.52-3.5,2.28-5.53,2.28-.95,0-1.92-.17-2.9-.52s-1.98-.86-3.01-1.55v-16.94c0-1.86-.04-3-.13-3.43s-.23-.72-.42-.87c-.19-.15-.43-.23-.71-.23-.33,0-.75.1-1.25.29l-.25-.62,4.91-2h.8v11.85ZM425.75,92.24v9.78c.61.6,1.23,1.04,1.88,1.35.65.3,1.31.46,1.99.46,1.08,0,2.09-.6,3.03-1.78.93-1.19,1.4-2.92,1.4-5.19,0-2.09-.47-3.7-1.4-4.83-.93-1.12-2-1.69-3.19-1.69-.63,0-1.26.16-1.89.48-.48.24-1.08.71-1.82,1.43Z"
+                            style="fill: #fff;" />
+                        <path
+                            d="M466.39,91.65h11.24v-6.93c0-1.24-.08-2.05-.23-2.45-.12-.3-.37-.55-.75-.77-.51-.29-1.05-.43-1.62-.43h-.86v-.66h10.35v.66h-.86c-.57,0-1.11.14-1.62.41-.38.19-.64.48-.78.87s-.21,1.18-.21,2.36v15.62c0,1.23.08,2.03.23,2.43.12.3.36.55.73.77.52.29,1.07.43,1.64.43h.86v.66h-10.35v-.66h.86c.99,0,1.71-.29,2.16-.87.3-.38.45-1.3.45-2.75v-7.37h-11.24v7.37c0,1.23.08,2.03.23,2.43.12.3.37.55.75.77.51.29,1.05.43,1.62.43h.87v.66h-10.37v-.66h.86c1,0,1.72-.29,2.18-.87.29-.38.43-1.3.43-2.75v-15.62c0-1.24-.08-2.05-.23-2.45-.12-.3-.36-.55-.73-.77-.52-.29-1.07-.43-1.64-.43h-.86v-.66h10.37v.66h-.87c-.57,0-1.11.14-1.62.41-.37.19-.62.48-.77.87s-.21,1.18-.21,2.36v6.93Z"
+                            style="fill: #fff;" />
+                    </g>
+                    <g>
+                        <path
+                            d="M114,31.52c0,17.37-14.13,31.5-31.5,31.5h-14v-13h14c10.2,0,18.5-8.3,18.5-18.5s-8.3-18.5-18.5-18.5h-29.81L42.69.02h39.81c17.37,0,31.5,14.13,31.5,31.5Z"
+                            style="fill: #fff;" />
+                        <path
+                            d="M82.5,113.02h-22.06l-24.24-29.42v-18.3l30.35,34.73h15.94c10.2,0,18.5-8.3,18.5-18.5s-8.3-18.5-18.5-18.5h-17.17L26.23,13.03l-13.23.06v99.92H0V.16l32.54-.16,39.12,50.02h10.83c17.37,0,31.5,14.13,31.5,31.5s-14.13,31.5-31.5,31.5Z"
+                            style="fill: #fff;" />
+                        <path
+                            d="M69.63,84.98c-2.73,2.33-6.83,2-9.16-.73l-29.36-35.1v50.87h7.48l10,13h-23.98c-3.59,0-6.5-2.91-6.5-6.5V31.52c0-2.73,1.7-5.16,4.25-6.1,2.56-.94,5.43-.2,7.2,1.88l40.8,48.51c2.33,2.74,2,6.84-.73,9.17Z"
+                            style="fill: #fff;" />
+                        <path d="M94.56,29.96c0,3.59-2.91,6.5-6.5,6.5h-17.59l-10-13h27.59c3.59,0,6.5,2.91,6.5,6.5Z"
+                            style="fill: #fff;" />
+                    </g>
+                </svg>
+            </div>
+
+            <div id="slogan">
+                Ihr Partner für Renovierung mit Qualität und Vertrauen.
+            </div>
+        </div>
+    </div>
+
+    <section id="services-section">
+        <div class="container">
+            <h2 class="section-title">Unsere Leistungen im Überblick</h2>
+
+            <p class="section-paragraph">
+                Navira Bau GmbH bietet umfassende handwerkliche Dienstleistungen für die Renovierung, Modernisierung und
+                Sanierung von Bestandsgebäuden ― innen wie außen. Unser qualifiziertes Team arbeitet zuverlässig,
+                effizient und mit einem hohen Qualitätsanspruch.
+            </p>
+
+            <div class="image-grid">
+                <div class="service-item">
+                    <div class="image-placeholder"></div>
+                    <p class="service-title">Malerarbeiten & Verputz</p>
+                </div>
+                <div class="service-item">
+                    <div class="image-placeholder"></div>
+                    <p class="service-title">Trockenbau & Innenausbau</p>
+                </div>
+                <div class="service-item">
+                    <div class="image-placeholder"></div>
+                    <p class="service-title">Bodenverlegung & Fliesenarbeiten</p>
+                </div>
+                <div class="service-item">
+                    <div class="image-placeholder"></div>
+                    <p class="service-title">Kleinere Montage- und Reparaturarbeiten</p>
+                </div>
+                <div class="service-item">
+                    <div class="image-placeholder"></div>
+                    <p class="service-title">Materialhandel & Baukoordination</p>
+                </div>
+                <div class="service-item">
+                    <div class="image-placeholder"></div>
+                    <p class="service-title">Accusam justo</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="site-footer">
+                <div class="container">
+                        <div class="footer-content">
+                                                <div class="footer-left-placeholder">
+                                                        </div>
+                                                <div class="footer-center-stack">
+                                        <div class="footer-logo">
+                                                <svg id="logo-svg-footer" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                                                    xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                            width="500px" height="150px"                             viewBox="0 0 500 150"
+                            xml:space="preserve">
+                                                        <g>
+                                <path
+                                    d="M151.92,8.9l25.59,32.17v-22.3c0-3.11-.45-5.21-1.34-6.31-1.22-1.48-3.28-2.19-6.16-2.14v-1.42h17.13v1.42c-2.19.28-3.67.64-4.42,1.09s-1.34,1.17-1.76,2.18-.63,2.73-.63,5.18v43.18h-1.3l-35.07-43.18v32.97c0,2.98.68,5,2.05,6.04s2.93,1.57,4.69,1.57h1.22v1.42h-18.4v-1.42c2.86-.03,4.84-.61,5.97-1.76s1.68-3.1,1.68-5.85V15.13l-1.11-1.38c-1.1-1.38-2.07-2.28-2.91-2.72s-2.05-.68-3.63-.73v-1.42h18.4Z"
+                                    style="fill: #fff;" />
+                                <path
+                                    d="M232.36,46h-18.32l-2.18,5.05c-.71,1.68-1.07,3.07-1.07,4.17,0,1.45.59,2.52,1.76,3.21.69.41,2.38.71,5.09.92v1.42h-17.25v-1.42c1.86-.28,3.39-1.05,4.59-2.31,1.2-1.26,2.68-3.87,4.44-7.82l18.55-41.38h.73l18.7,42.53c1.78,4.03,3.25,6.57,4.4,7.61.87.79,2.09,1.25,3.67,1.38v1.42h-25.09v-1.42h1.03c2.01,0,3.43-.28,4.25-.84.56-.41.84-.99.84-1.76,0-.46-.08-.93-.23-1.42-.05-.23-.43-1.19-1.15-2.87l-2.75-6.46ZM231.06,43.17l-7.73-17.86-7.96,17.86h15.68Z"
+                                    style="fill: #fff;" />
+                                <path
+                                    d="M312.8,8.9v1.42c-1.89.31-3.57,1.31-5.05,3.02-1.07,1.27-2.66,4.27-4.78,8.99l-17.86,39.62h-1.26l-17.78-41.23c-2.14-4.97-3.58-7.89-4.3-8.76s-2.1-1.42-4.11-1.64v-1.42h24.86v1.42h-.84c-2.24,0-3.77.28-4.59.84-.59.38-.88.94-.88,1.68,0,.46.1,1,.31,1.63s.89,2.3,2.07,5.03l11.05,25.82,10.25-22.99c1.22-2.78,1.98-4.64,2.26-5.58s.42-1.75.42-2.41c0-.76-.2-1.44-.61-2.03s-1.01-1.03-1.8-1.34c-1.1-.43-2.55-.65-4.36-.65v-1.42h17.02Z"
+                                    style="fill: #fff;" />
+                                <path
+                                    d="M353.08,59.34v1.42h-27.12v-1.42h1.72c1.5,0,2.72-.27,3.63-.8.66-.36,1.17-.97,1.53-1.84.28-.61.42-2.22.42-4.82V17.77c0-2.65-.14-4.31-.42-4.97s-.85-1.24-1.7-1.74-2.01-.75-3.46-.75h-1.72v-1.42h27.12v1.42h-1.72c-1.5,0-2.72.27-3.63.8-.66.36-1.19.97-1.57,1.84-.28.61-.42,2.22-.42,4.82v34.12c0,2.65.15,4.31.44,4.97s.87,1.24,1.72,1.74,2.01.75,3.46.75h1.72Z"
+                                    style="fill: #fff;" />
+                                <path
+                                    d="M386.48,37.12v14.53c0,2.8.17,4.57.52,5.3s.95,1.31,1.82,1.74c.87.43,2.49.65,4.86.65v1.42h-26.54v-1.42c2.4,0,4.02-.22,4.88-.67.85-.45,1.45-1.03,1.8-1.74s.52-2.47.52-5.28V18c0-2.8-.17-4.57-.52-5.3s-.95-1.31-1.82-1.74c-.87-.43-2.49-.65-4.86-.65v-1.42h24.1c6.27,0,10.86.43,13.77,1.3s5.28,2.47,7.11,4.8,2.75,5.07,2.75,8.2c0,3.82-1.38,6.99-4.13,9.49-1.76,1.58-4.22,2.77-7.38,3.56l12.47,17.56c1.63,2.27,2.79,3.68,3.48,4.25,1.05.79,2.26,1.22,3.63,1.3v1.42h-16.33l-16.71-23.64h-3.4ZM386.48,11.69v22.72h2.18c3.54,0,6.2-.33,7.96-.98s3.14-1.82,4.15-3.52c1.01-1.7,1.51-3.91,1.51-6.64,0-3.95-.92-6.87-2.77-8.76-1.85-1.89-4.83-2.83-8.93-2.83h-4.09Z"
+                                    style="fill: #fff;" />
+                                <path
+                                    d="M465.62,46h-18.32l-2.18,5.05c-.71,1.68-1.07,3.07-1.07,4.17,0,1.45.59,2.52,1.76,3.21.69.41,2.38.71,5.09.92v1.42h-17.25v-1.42c1.86-.28,3.39-1.05,4.59-2.31s2.68-3.87,4.44-7.82l18.55-41.38h.73l18.7,42.53c1.78,4.03,3.25,6.57,4.4,7.61.87.79,2.09,1.25,3.67,1.38v1.42h-25.09v-1.42h1.03c2.01,0,3.43-.28,4.25-.84.56-.41.84-.99.84-1.76,0-.46-.08-.93-.23-1.42-.05-.23-.43-1.19-1.15-2.87l-2.75-6.46ZM464.32,43.17l-7.73-17.86-7.96,17.86h15.68Z"
+                                    style="fill: #fff;" />
+                                <path
+                                    d="M149.3,92.27c1.68.36,2.93.93,3.77,1.71,1.15,1.1,1.73,2.43,1.73,4.02,0,1.2-.38,2.35-1.14,3.45s-1.81,1.9-3.13,2.41-3.35.76-6.08.76h-11.42v-.66h.91c1.01,0,1.74-.32,2.18-.96.27-.42.41-1.3.41-2.66v-15.64c0-1.5-.17-2.45-.52-2.84-.46-.52-1.15-.79-2.07-.79h-.91v-.66h10.46c1.95,0,3.52.14,4.69.43,1.78.43,3.15,1.19,4.09,2.28s1.41,2.34,1.41,3.76c0,1.21-.37,2.3-1.11,3.26s-1.83,1.67-3.27,2.13ZM139.95,91.31c.44.08.94.15,1.51.19s1.19.06,1.87.06c1.74,0,3.04-.19,3.92-.56s1.54-.95,2.01-1.72.7-1.62.7-2.53c0-1.42-.58-2.62-1.73-3.62s-2.84-1.5-5.05-1.5c-1.19,0-2.26.13-3.21.39v9.3ZM139.95,102.87c1.38.32,2.74.48,4.09.48,2.15,0,3.8-.48,4.93-1.45s1.7-2.17,1.7-3.6c0-.94-.26-1.84-.77-2.71s-1.35-1.55-2.5-2.05-2.58-.75-4.28-.75c-.74,0-1.37.01-1.89.04s-.95.07-1.27.12v9.92Z"
+                                    style="fill: #fff;" />
+                                <path
+                                    d="M193.99,96.52h-9.37l-1.64,3.82c-.41.94-.61,1.64-.61,2.11,0,.37.17.69.53.97.35.28,1.11.46,2.28.54v.66h-7.62v-.66c1.01-.18,1.67-.41,1.96-.7.61-.57,1.28-1.73,2.02-3.48l8.51-19.92h.62l8.42,20.13c.68,1.62,1.29,2.67,1.85,3.15s1.32.75,2.31.81v.66h-9.55v-.66c.96-.05,1.62-.21,1.95-.48s.51-.61.51-1c0-.52-.24-1.35-.71-2.48l-1.46-3.48ZM193.49,95.2l-4.11-9.78-4.21,9.78h8.32Z"
+                                    style="fill: #fff;" />
+                                <path
+                                    d="M241.57,81.08v-.66h8.57v.66h-.91c-.95,0-1.68.4-2.2,1.2-.25.37-.37,1.23-.37,2.57v9.82c0,2.43-.24,4.31-.72,5.65s-1.43,2.49-2.84,3.44-3.33,1.44-5.76,1.44c-2.64,0-4.65-.46-6.01-1.37-1.37-.92-2.34-2.15-2.91-3.69-.38-1.06-.57-3.05-.57-5.96v-9.46c0-1.49-.21-2.46-.62-2.93s-1.07-.7-1.99-.7h-.91v-.66h10.46v.66h-.93c-1,0-1.71.31-2.14.95-.3.43-.45,1.32-.45,2.68v10.55c0,.94.09,2.02.26,3.23.17,1.21.48,2.16.94,2.84.45.68,1.1,1.24,1.95,1.68.85.44,1.89.66,3.13.66,1.58,0,3-.35,4.25-1.04s2.1-1.57,2.56-2.65c.46-1.08.69-2.9.69-5.47v-9.8c0-1.51-.17-2.46-.5-2.84-.46-.52-1.16-.79-2.07-.79h-.91Z"
+                                    style="fill: #fff;" />
+                                <path
+                                    d="M346.8,79.87l.62,7.64h-.62c-.63-1.9-1.45-3.34-2.45-4.3-1.44-1.39-3.29-2.09-5.55-2.09-3.08,0-5.43,1.22-7.03,3.66-1.35,2.06-2.02,4.51-2.02,7.35,0,2.31.45,4.41,1.34,6.32s2.06,3.3,3.51,4.19,2.93,1.33,4.45,1.33c.89,0,1.76-.11,2.59-.34s1.64-.56,2.41-1v-7c0-1.21-.09-2.01-.28-2.38s-.47-.66-.86-.86-1.07-.29-2.04-.29v-.68h9.37v.68h-.45c-.93,0-1.56.31-1.91.93-.24.44-.36,1.31-.36,2.61v7.41c-1.37.74-2.72,1.28-4.05,1.62s-2.81.52-4.44.52c-4.68,0-8.23-1.5-10.66-4.5-1.82-2.25-2.73-4.84-2.73-7.78,0-2.13.51-4.17,1.53-6.12,1.21-2.32,2.88-4.11,5-5.35,1.77-1.04,3.87-1.55,6.28-1.55.88,0,1.68.07,2.4.21s1.74.46,3.06.95c.67.25,1.11.37,1.34.37s.42-.1.58-.31.26-.62.29-1.22h.66Z"
+                                    style="fill: #fff;" />
+                                <path
+                                    d="M377.23,91.27c1.19-1.19,1.89-1.87,2.11-2.05.54-.45,1.11-.8,1.73-1.05.62-.25,1.23-.37,1.84-.37,1.02,0,1.9.3,2.64.89.74.6,1.23,1.46,1.48,2.59,1.23-1.43,2.26-2.36,3.11-2.81.84-.45,1.71-.67,2.61-.67s1.64.22,2.31.67c.67.45,1.2,1.18,1.6,2.19.26.69.39,1.77.39,3.25v7.03c0,1.02.08,1.72.23,2.11.12.26.34.48.66.67s.84.28,1.57.28v.64h-8.07v-.64h.34c.7,0,1.25-.14,1.64-.41.27-.19.47-.49.59-.91.05-.2.07-.78.07-1.73v-7.03c0-1.33-.16-2.27-.48-2.82-.46-.76-1.21-1.14-2.23-1.14-.63,0-1.26.16-1.9.47-.64.31-1.41.9-2.31,1.76l-.04.2.04.77v7.8c0,1.12.06,1.81.19,2.09s.36.5.71.69c.34.18.93.28,1.77.28v.64h-8.26v-.64c.9,0,1.53-.11,1.87-.32s.57-.54.71-.96c.06-.2.09-.79.09-1.77v-7.03c0-1.33-.2-2.29-.59-2.87-.52-.76-1.26-1.14-2.2-1.14-.64,0-1.28.17-1.91.52-.99.52-1.75,1.11-2.28,1.77v8.76c0,1.07.07,1.77.22,2.09.15.32.37.56.66.72.29.16.88.24,1.78.24v.64h-8.09v-.64c.75,0,1.27-.08,1.57-.24.3-.16.52-.42.68-.77.15-.35.23-1.03.23-2.04v-6.25c0-1.8-.05-2.96-.16-3.48-.08-.39-.21-.66-.39-.81s-.42-.22-.73-.22c-.33,0-.73.09-1.2.27l-.27-.64,4.93-2h.77v3.48Z"
+                                    style="fill: #fff;" />
+                                <path
+                                    d="M425.75,91.09c1.58-2.2,3.29-3.3,5.12-3.3,1.68,0,3.14.72,4.39,2.15s1.87,3.39,1.87,5.88c0,2.9-.96,5.24-2.89,7.01-1.65,1.52-3.5,2.28-5.53,2.28-.95,0-1.92-.17-2.9-.52s-1.98-.86-3.01-1.55v-16.94c0-1.86-.04-3-.13-3.43s-.23-.72-.42-.87c-.19-.15-.43-.23-.71-.23-.33,0-.75.1-1.25.29l-.25-.62,4.91-2h.8v11.85ZM425.75,92.24v9.78c.61.6,1.23,1.04,1.88,1.35.65.3,1.31.46,1.99.46,1.08,0,2.09-.6,3.03-1.78.93-1.19,1.4-2.92,1.4-5.19,0-2.09-.47-3.7-1.4-4.83-.93-1.12-2-1.69-3.19-1.69-.63,0-1.26.16-1.89.48-.48.24-1.08.71-1.82,1.43Z"
+                                    style="fill: #fff;" />
+                                <path
+                                    d="M466.39,91.65h11.24v-6.93c0-1.24-.08-2.05-.23-2.45-.12-.3-.37-.55-.75-.77-.51-.29-1.05-.43-1.62-.43h-.86v-.66h10.35v.66h-.86c-.57,0-1.11.14-1.62.41-.38.19-.64.48-.78.87s-.21,1.18-.21,2.36v15.62c0,1.23.08,2.03.23,2.43.12.3.36.55.73.77.52.29,1.07.43,1.64.43h.86v.66h-10.35v-.66h.86c.99,0,1.71-.29,2.16-.87.3-.38.45-1.3.45-2.75v-7.37h-11.24v7.37c0,1.23.08,2.03.23,2.43.12.3.37.55.75.77.51.29,1.05.43,1.62.43h.87v.66h-10.37v-.66h.86c1,0,1.72-.29,2.18-.87.29-.38.43-1.3.43-2.75v-15.62c0-1.24-.08-2.05-.23-2.45-.12-.3-.36-.55-.73-.77-.52-.29-1.07-.43-1.64-.43h-.86v-.66h10.37v.66h-.87c-.57,0-1.11.14-1.62.41-.37.19-.62.48-.77.87s-.21,1.18-.21,2.36v6.93Z"
+                                    style="fill: #fff;" />
+                            </g>
+                            <g>
+                                <path
+                                    d="M114,31.52c0,17.37-14.13,31.5-31.5,31.5h-14v-13h14c10.2,0,18.5-8.3,18.5-18.5s-8.3-18.5-18.5-18.5h-29.81L42.69.02h39.81c17.37,0,31.5,14.13,31.5,31.5Z"
+                                    style="fill: #fff;" />
+                                <path
+                                    d="M82.5,113.02h-22.06l-24.24-29.42v-18.3l30.35,34.73h15.94c10.2,0,18.5-8.3,18.5-18.5s-8.3-18.5-18.5-18.5h-17.17L26.23,13.03l-13.23.06v99.92H0V.16l32.54-.16,39.12,50.02h10.83c17.37,0,31.5,14.13,31.5,31.5s-14.13,31.5-31.5,31.5Z"
+                                    style="fill: #fff;" />
+                                <path
+                                    d="M69.63,84.98c-2.73,2.33-6.83,2-9.16-.73l-29.36-35.1v50.87h7.48l10,13h-23.98c-3.59,0-6.5-2.91-6.5-6.5V31.52c0-2.73,1.7-5.16,4.25-6.1,2.56-.94,5.43-.2,7.2,1.88l40.8,48.51c2.33,2.74,2,6.84-.73,9.17Z"
+                                    style="fill: #fff;" />
+                                <path d="M94.56,29.96c0,3.59-2.91,6.5-6.5,6.5h-17.59l-10-13h27.59c3.59,0,6.5,2.91,6.5,6.5Z"
+                                    style="fill: #fff;" />
+                            </g>
+                        </svg>
+                                            </div>
+                                        <div class="footer-copyright">
+                                                <p>© 2025 Navira Bau GmbH ― Alle Rechte vorbehalten</p>
+                                            </div>
+                                    </div>
+                                                <div class="footer-links">
+                                        <nav>
+                                                <a href="#">Impressum</a>
+                                                <a href="#">Datenschutzerklärung</a>
+                                                <a href="#">Kontakt</a>
+                                                <a href="#">Über uns</a>
+                                            </nav>
+                                    </div>
+                                    </div>
+                                                                                                    <div class="footer-social-links">
+                                                                            <a href="https://www.instagram.com/navirabau/"
+                                            target="_blank" rel="noopener noreferrer" aria-label="Besuchen Sie uns auf Instagram">
+                                                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                fill="currentColor">
+                                                <path
+                                                    d="M12 2.982c2.937 0 3.285.011 4.445.064a6.087 6.087 0 0 1 2.042.379 3.408 3.408 0 0 1 1.265.823 3.408 3.408 0 0 1 .823 1.265 6.087 6.087 0 0 1 .379 2.042c.053 1.16.064 1.508.064 4.445s-.011 3.285-.064 4.445a6.087 6.087 0 0 1-.379 2.042 3.643 3.643 0 0 1-2.088 2.088 6.087 6.087 0 0 1-2.042.379c-1.16.053-1.508.064-4.445.064s-3.285-.011-4.445-.064a6.087 6.087 0 0 1-2.043-.379 3.408 3.408 0 0 1-1.264-.823 3.408 3.408 0 0 1-.823-1.265 6.087 6.087 0 0 1-.379-2.042c-.053-1.16-.064-1.508-.064-4.445s.011-3.285.064-4.445a6.087 6.087 0 0 1 .379-2.042 3.408 3.408 0 0 1 .823-1.265 3.408 3.408 0 0 1 1.265-.823 6.087 6.087 0 0 1 2.042-.379c1.16-.053 1.508-.064 4.445-.064M12 1c-2.987 0-3.362.013-4.535.066a8.074 8.074 0 0 0-2.67.511 5.392 5.392 0 0 0-1.949 1.27 5.392 5.392 0 0 0-1.269 1.948 8.074 8.074 0 0 0-.51 2.67C1.012 8.638 1 9.013 1 12s.013 3.362.066 4.535a8.074 8.074 0 0 0 .511 2.67 5.392 5.392 0 0 0 1.27 1.949 5.392 5.392 0 0 0 1.948 1.269 8.074 8.074 0 0 0 2.67.51C8.638 22.988 9.013 23 12 23s3.362-.013 4.535-.066a8.074 8.074 0 0 0 2.67-.511 5.625 5.625 0 0 0 3.218-3.218 8.074 8.074 0 0 0 .51-2.67C22.988 15.362 23 14.987 23 12s-.013-3.362-.066-4.535a8.074 8.074 0 0 0-.511-2.67 5.392 5.392 0 0 0-1.27-1.949 5.392 5.392 0 0 0-1.948-1.269 8.074 8.074 0 0 0-2.67-.51C15.362 1.012 14.987 1 12 1Zm0 5.351A5.649 5.649 0 1 0 17.649 12 5.649 5.649 0 0 0 12 6.351Zm0 9.316A3.667 3.667 0 1 1 15.667 12 3.667 3.667 0 0 1 12 15.667Zm5.872-10.859a1.32 1.32 0 1 0 1.32 1.32 1.32 1.32 0 0 0-1.32-1.32Z" />
+                                            </svg>
+                                                                                </a>
+                                                                            <a href="mailto:info@navirabau.com" aria-label="Senden Sie uns eine E-Mail">
+                                                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                fill="currentColor">
+                                                <path
+                                                    d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" />
+                                            </svg>
+                                                                                </a>
+                                                                        </div>
+                                                                                            </div>
+                            </div>
+                    </div>
+            </footer>
+
+    <script>
+        // JavaScript for orchestrating animations and scroll effects
+
+        // Function to check if an element is currently in the viewport
+        const isElementInViewport = (el, offset = 0.85) => {
+            const rect = el.getBoundingClientRect();
+            // Check if the element's top is visible enough (offset) and not completely off the bottom
+            return (
+                rect.top <= (window.innerHeight || document.documentElement.clientHeight) * offset &&
+                rect.bottom >= 0
+            );
+        };
+
+        // Function to handle scroll animations
+            const handleScroll = () => {
+                const logoContainer = document.getElementById('logo-container');
+                const slogan = document.getElementById('slogan');
+                const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+                const servicesSection = document.getElementById('services-section');
+                const title = servicesSection.querySelector('.section-title');
+                const paragraph = servicesSection.querySelector('.section-paragraph');
+                const serviceItems = servicesSection.querySelectorAll('.service-item');
+
+                // 1. Blue Section (Logo/Slogan fade out/in on scroll)
+                const introHeight = document.getElementById('intro-section').offsetHeight;
+
+                if (window.scrollY > introHeight / 4) {
+                    logoContainer.classList.add('scrolled-up');
+                    slogan.classList.add('scrolled-up');
+
+                } else {
+                    logoContainer.classList.remove('scrolled-up');
+                    slogan.classList.remove('scrolled-up');
+                }
+
+                // Add this block to show/hide the scroll-to-top button
+                if (window.scrollY > 300) { // Show button after scrolling 300px
+                    scrollToTopBtn.classList.add('visible');
+                } else {
+                    scrollToTopBtn.classList.remove('visible');
+                }
+
+            // 2. Gray Section (Title/Paragraph/Images Fade In/Out on scroll)
+            // Title and Paragraph
+            if (isElementInViewport(title, 0.95)) {
+                    title.classList.add('show-content');
+                    paragraph.classList.add('show-content');
+                } else {
+                    title.classList.remove('show-content');
+                    paragraph.classList.remove('show-content');
+                }
+                serviceItems.forEach((item, index) => {
+                    if (isElementInViewport(item, 0.9)) {
+                        if (!item.classList.contains('show-content')) {
+                            setTimeout(() => {
+                                item.classList.add('show-content');
+                            }, index * 150);
+                        }
+                    } else {
+                        item.classList.remove('show-content');
+                    }
+                });
+            };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const logo = document.getElementById('logo-container');
+            const slogan = document.getElementById('slogan');
+
+            // INTRO ANIMATION (ON LOAD): Logo first, then Slogan 
+
+            // 1. Logo animation (Logo first)
+            const logoDuration = 2000;
+            setTimeout(() => {
+                logo.classList.add('visible');
+            }, 500);
+
+            // 2. Slogan animation (Slogan second)
+            const sloganDelay = 1500;
+            const sloganDuration = 2000;
+            const totalIntroTime = 500 + Math.max(logoDuration, sloganDelay + sloganDuration);
+
+            setTimeout(() => {
+                slogan.classList.add('visible');
+            }, sloganDelay);
+
+            // CRITICAL FIX from previous step was to REMOVE the setTimeout
+            // that removed the '.visible' class. That code is now gone.
+
+            // Initial check for scroll content
+            handleScroll();
+
+            // Add scroll event listener
+            window.addEventListener('scroll', handleScroll);
+
+            // Add click listener for the scroll-to-top button
+            scrollToTopBtn.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth' // Smooth scroll animation
+                });
+            });
+        });
+    </script>
+    <!-- =================================== -->
+    <!-- Add the scroll-to-top button here -->
+    <!-- =================================== -->
+    <button id="scrollToTopBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+
+            <polygon points="389.79 341.18 250 213.68 110.21 341.18 87.02 315.76 250 167.11 412.98 315.76 389.79 341.18" />
+
+        </svg>
+            <span class="tooltip-text">Nach oben</span>
+    </button>
+
+</body>
+
+</html>
