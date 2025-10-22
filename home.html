@@ -394,6 +394,7 @@
             padding: 15px 35px;
             border-radius: 0px; 
             cursor: pointer;
+            transition: background-color 0.3s ease-out, color 0.3s ease-out;
 
             /* The website’s theme colors. */
             background-color: #0061b7;
@@ -401,74 +402,146 @@
         }
 
         .cta-button:hover {
-            opacity: 0.85; 
+            background-color: #00497f;
+            color: #f5f5f5;
         }
 
         /* ------------------- FOOTER STYLES ------------------- */
         #site-footer {
             background-color: #00497f;
-            color: #ffffff;
-            padding: 50px 0; /* Vertical padding */
+            color: #f5f5f5; /* main footer text color */
+            padding: 40px 0 40px 0; /* top and bottom padding */
             width: 100%;
             box-sizing: border-box;
-            position: relative;
+            font-size: 1em; /* slightly smaller text */
         }
 
-        .footer-content {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            flex-wrap: wrap;
-            gap: 35px;
+        /* Main grid layout */
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* single column */
+            gap: 10px; /* spacing between sections */
+            align-items: start;
         }
 
-        .footer-left-placeholder {
-            display: none;
-        }
-
-        .footer-center-stack {
+        /* Contact info column */
+        .footer-info {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 15px;
+            gap: 5px; /* spacing between logo, address, contact */
+            align-items: flex-start;
         }
 
         .footer-logo #logo-svg-footer {
             height: 70px;
             width: auto;
+            margin-bottom: 5px;
+        }
+
+        .footer-address {
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        /* Contact items (icon + text) */
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        /* Align address icon to the top for multi-line text */
+        .address-item {
+            align-items: flex-start; /* The icon should be aligned with the first line. */
+            margin-top: 5px; /* Maintain the top spacing. */
+        }
+        .address-item .contact-icon {
+             margin-top: 4px; /* Bring the icon slightly lower for better alignment (optional). */
+        }
+
+        .contact-item a {
+            color: #f5f5f5;
+            text-decoration: none;
+            line-height: 1.5;
+        }
+
+        .contact-item a:hover {
+            text-decoration: underline;
+        }
+
+        .contact-icon {
+            width: 28px;
+            height: 28px;
+            fill: #f5f5f5;
+            flex-shrink: 0;
+        }
+
+        /* Single Instagram icon */
+        .footer-social-single {
+            margin-top: 10px;
+        }
+
+        .footer-social-single a {
+            display: inline-block;
+            opacity: 1;
+            transition: opacity 0.3s ease-out;
+        }
+
+        .footer-social-single a:hover {
+            opacity: 0.6;
+        }
+
+        .footer-social-single svg {
+            width: 28px;
+            height: 28px;
+            fill: #f5f5f5;
+        }
+
+        /* Divider line */
+        .footer-divider {
+            border: none;
+            height: 1px;
+            background-color: #f5f5f5;
+            margin: 5px 0;
+            width: 100%;
+        }
+
+        /* Bottom row (copyright + links) */
+        .footer-bottom {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            font-size: 0.85em;
         }
 
         .footer-copyright {
-            font-size: 0.95em;
-            color: #f5f5f5;
-            text-align: center;
+            margin: 0;
+            text-align: left;
         }
 
         .footer-copyright p {
             margin: 0;
         }
 
-        .footer-links {
-            flex: 1;
-            min-width: 100px;
-        }
-
+        /* Bottom navigation links */
         .footer-links nav {
             display: flex;
-            justify-content: center;
+            justify-content: flex-end;
             gap: 15px;
             flex-wrap: wrap;
-            align-items: center;
         }
 
         .footer-links nav a {
             color: #f5f5f5;
             text-decoration: none;
-            font-size: 0.9em;
             font-weight: 600;
+            transition: color 0.2s ease-out;
             position: relative;
-            padding-bottom: 5px;
+            padding-bottom: 3px;
         }
 
         .footer-links nav a::after {
@@ -484,31 +557,16 @@
             transition: transform 0.3s ease-out;
         }
 
-        .footer-social-links {
-            display: flex;
-             justify-content: center;
-            gap: 25px; /* Space between icons */
-            width: 100%;
-            margin-top: 25px;
-        }
-
-        .footer-social-links a {
-            color: #f5f5f5; /* Set icon color to white */
-            opacity: 1;
-            transition: opacity 0.3s ease-out; /* For smooth hover animation */
-        }
-
-        .footer-social-links a:hover {
-            opacity: 0.5; /* 50% opacity on hover */
-        }
-
-        .footer-social-links svg {
-            width: 28px; /* Icon size */
-            height: 28px; /* Icon size */
-        }
-
         .footer-links nav a:hover::after {
             transform: scaleX(1);
+        }
+
+        /* Remove old unused rules */
+            .footer-content,
+            .footer-center-stack,
+            .footer-left-placeholder,
+            .footer-social-links {
+            display: none;
         }
 
         /* =================================== */
@@ -517,8 +575,8 @@
         #scrollToTopBtn {
             display: none; /* Hidden by default */
             position: fixed; /* Keep it in the viewport */
-            bottom: 30px; /* Distance from bottom */
-            right: 30px; /* Distance from right */
+            bottom: 90px; /* Distance from bottom */
+            right: 70px; /* Distance from right */
             z-index: 1000; /* Ensure it's on top of other content */
             border: none;
             outline: none;
@@ -578,15 +636,43 @@
             .footer-content {
                 gap: 20px;
             }
-
-            .footer-links nav {
-                flex: 1;
-                text-align: center;
-            }
     }
 
         @media (max-width: 600px) {
-            
+            .footer-bottom {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .footer-links nav {
+                justify-content: center;
+            }
+
+            .footer-info {
+                align-items: flex-start;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .contact-item {
+                display: flex;
+                align-items: flex-start;
+                gap: 10px;
+                margin-top: 10px;
+                width: auto;
+                max-width: fit-content;
+            }
+
+            .contact-item > div {
+            }
+
+            .footer-social-single {
+                display: inline-flex;
+                align-items: center;
+                padding-top: 5px;
+            }
+
             .header-container {
                 padding: 0 20px; /* Re-apply padding only for mobile */
             }
@@ -595,6 +681,10 @@
                 padding-left: 25px;
                 padding-right: 25px;
                 box-sizing: border-box;
+            }
+
+            .section-paragraph {
+                letter-spacing: -0.5px; /* It slightly reduces the letter spacing. */
             }
 
             /* Mobile devices: 1 column grid */
@@ -635,6 +725,12 @@
             #scrollToTopBtn {
                 bottom: 20px; /* Adjust distance from bottom */
                 right: 20px; /* Adjust distance from right */
+            }
+        }
+        /* Increase footer container width on desktop */
+        @media (min-width: 900px) { /* Adjust breakpoint if needed */
+            #site-footer .container {
+                max-width: 1800px;
             }
         }
     </style>
@@ -761,7 +857,7 @@
                 </div>
                 <div class="service-item">
                     <div class="image-placeholder"></div>
-                    <p class="service-title">Accusam justo</p>
+                    <p class="service-title">Innenrenovierung & Modernisierung</p>
                 </div> </div>
                 <div class="cta-container">
                     <h3 class="cta-title">Wie können wir Sie bei der Vermessung, Digitalisierung und Dokumentation Ihrer Immobilie
@@ -775,17 +871,14 @@
     </section>
 
     <footer id="site-footer">
-                <div class="container">
-                        <div class="footer-content">
-                                                <div class="footer-left-placeholder">
-                                                        </div>
-                                                <div class="footer-center-stack">
-                                        <div class="footer-logo">
-                                                <svg id="logo-svg-footer" version="1.1" xmlns="http://www.w3.org/2000/svg"
-                                                    xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                            width="500px" height="150px"                             viewBox="0 0 500 150"
-                            xml:space="preserve">
-                                                        <g>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-info">
+                    <div class="footer-logo">
+                        <svg id="logo-svg-footer" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="500px" height="150px"
+                            viewBox="0 0 500 150" xml:space="preserve">
+                            <g>
                                 <path
                                     d="M151.92,8.9l25.59,32.17v-22.3c0-3.11-.45-5.21-1.34-6.31-1.22-1.48-3.28-2.19-6.16-2.14v-1.42h17.13v1.42c-2.19.28-3.67.64-4.42,1.09s-1.34,1.17-1.76,2.18-.63,2.73-.63,5.18v43.18h-1.3l-35.07-43.18v32.97c0,2.98.68,5,2.05,6.04s2.93,1.57,4.69,1.57h1.22v1.42h-18.4v-1.42c2.86-.03,4.84-.61,5.97-1.76s1.68-3.1,1.68-5.85V15.13l-1.11-1.38c-1.1-1.38-2.07-2.28-2.91-2.72s-2.05-.68-3.63-.73v-1.42h18.4Z"
                                     style="fill: #fff;" />
@@ -840,41 +933,74 @@
                                     style="fill: #fff;" />
                             </g>
                         </svg>
-                                            </div>
-                                        <div class="footer-copyright">
-                                                <p>© 2025 Navira Bau GmbH ― Alle Rechte vorbehalten</p>
-                                            </div>
-                                    </div>
-                                                <div class="footer-links">
-                                        <nav>
-                                                <a href="#">Impressum</a>
-                                                <a href="#">Datenschutzerklärung</a>
-                                                <a href="#">Kontakt</a>
-                                                <a href="#">Über Uns</a>
-                                            </nav>
-                                    </div>
-                                    </div>
-                                                                                                    <div class="footer-social-links">
-                                                                            <a href="https://www.instagram.com/navirabau/"
-                                            target="_blank" rel="noopener noreferrer" aria-label="Besuchen Sie uns auf Instagram">
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                fill="currentColor">
-                                                <path
-                                                    d="M12 2.982c2.937 0 3.285.011 4.445.064a6.087 6.087 0 0 1 2.042.379 3.408 3.408 0 0 1 1.265.823 3.408 3.408 0 0 1 .823 1.265 6.087 6.087 0 0 1 .379 2.042c.053 1.16.064 1.508.064 4.445s-.011 3.285-.064 4.445a6.087 6.087 0 0 1-.379 2.042 3.643 3.643 0 0 1-2.088 2.088 6.087 6.087 0 0 1-2.042.379c-1.16.053-1.508.064-4.445.064s-3.285-.011-4.445-.064a6.087 6.087 0 0 1-2.043-.379 3.408 3.408 0 0 1-1.264-.823 3.408 3.408 0 0 1-.823-1.265 6.087 6.087 0 0 1-.379-2.042c-.053-1.16-.064-1.508-.064-4.445s.011-3.285.064-4.445a6.087 6.087 0 0 1 .379-2.042 3.408 3.408 0 0 1 .823-1.265 3.408 3.408 0 0 1 1.265-.823 6.087 6.087 0 0 1 2.042-.379c1.16-.053 1.508-.064 4.445-.064M12 1c-2.987 0-3.362.013-4.535.066a8.074 8.074 0 0 0-2.67.511 5.392 5.392 0 0 0-1.949 1.27 5.392 5.392 0 0 0-1.269 1.948 8.074 8.074 0 0 0-.51 2.67C1.012 8.638 1 9.013 1 12s.013 3.362.066 4.535a8.074 8.074 0 0 0 .511 2.67 5.392 5.392 0 0 0 1.27 1.949 5.392 5.392 0 0 0 1.948 1.269 8.074 8.074 0 0 0 2.67.51C8.638 22.988 9.013 23 12 23s3.362-.013 4.535-.066a8.074 8.074 0 0 0 2.67-.511 5.625 5.625 0 0 0 3.218-3.218 8.074 8.074 0 0 0 .51-2.67C22.988 15.362 23 14.987 23 12s-.013-3.362-.066-4.535a8.074 8.074 0 0 0-.511-2.67 5.392 5.392 0 0 0-1.27-1.949 5.392 5.392 0 0 0-1.948-1.269 8.074 8.074 0 0 0-2.67-.51C15.362 1.012 14.987 1 12 1Zm0 5.351A5.649 5.649 0 1 0 17.649 12 5.649 5.649 0 0 0 12 6.351Zm0 9.316A3.667 3.667 0 1 1 15.667 12 3.667 3.667 0 0 1 12 15.667Zm5.872-10.859a1.32 1.32 0 1 0 1.32 1.32 1.32 1.32 0 0 0-1.32-1.32Z" />
-                                            </svg>
-                                                                                </a>
-                                                                            <a href="mailto:info@navirabau.com" aria-label="Senden Sie uns eine E-Mail">
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                fill="currentColor">
-                                                <path
-                                                    d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" />
-                                            </svg>
-                                                                                </a>
-                                                                        </div>
-                                                                                            </div>
-                            </div>
                     </div>
-            </footer>
+                    <div class="contact-item address-item">          <svg class="contact-icon" id="Layer_1"
+                            xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 256 256">
+                                    <defs>
+                                            <style>
+                                    .st0 {
+                                        fill: #f5f5f5;
+                                    }
+                                </style>
+                                        </defs>
+                            <path class="st0"
+                                d="M127.86,1.41c-48.68,0-88.28,39.6-88.28,88.28,0,13.54,2.99,26.53,8.92,38.7,8.16,16.39,32.06,56.78,57.36,99.55l12.32,20.84c2.02,3.42,5.7,5.52,9.68,5.52s7.66-2.1,9.68-5.52l12.31-20.83c25.13-42.48,48.87-82.61,57.19-99.22.08-.14.15-.29.22-.44,5.88-12.09,8.87-25.08,8.87-38.61C216.14,41.01,176.53,1.41,127.86,1.41ZM127.86,129.76c-23.81,0-43.19-19.37-43.19-43.18s19.38-43.19,43.19-43.19,43.18,19.37,43.18,43.19-19.37,43.18-43.18,43.18Z" />
+                        </svg>
+                                <p class="footer-address">Goethestraße 17<br>10625 Berlin,<br>Deutschland</p>
+                    </div>
+                    <div class="contact-item">
+                        <svg class="contact-icon" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 256 256"
+                            enable-background="new 0 0 256 256" xml:space="preserve">
+                            <g>
+                                <g>
+                                    <path fill="#f5f5f5"
+                                        d="M171.3,10H84.8c-10.8,0-19.7,8.9-19.7,19.7v196.6c0,10.8,8.9,19.7,19.7,19.7h86.5c10.8,0,19.6-8.9,19.6-19.7V29.7C190.9,18.9,182.1,10,171.3,10 M116.2,25.7h23.6c2.2,0,3.9,1.8,3.9,3.9c0,2.2-1.7,4-3.9,4h-23.6c-2.2,0-3.9-1.8-3.9-4C112.3,27.5,114,25.7,116.2,25.7 M128,238.1c-6.5,0-11.8-5.3-11.8-11.8c0-6.5,5.3-11.8,11.8-11.8c6.5,0,11.8,5.3,11.8,11.8C139.8,232.8,134.6,238.1,128,238.1 M183.1,206.7H72.9V49.3h110.1V206.7L183.1,206.7z" />
+                                </g>
+                            </g>
+                        </svg>
+                        <a href="tel:+4917677290290">+49 176 77290290</a>
+                    </div>
+                    <div class="contact-item">
+                        <svg class="contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path
+                                d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" />
+                        </svg>
+                        <div>
+                            <a href="mailto:Info@navirabau.com">Info@navirabau.com</a><br>
+                            <a href="mailto:Info@navirabau.de">Info@navirabau.de</a>
+                        </div>
+                    </div>
+                    <div class="footer-social-single">
+                        <a href="https://www.instagram.com/navirabau/" target="_blank" rel="noopener noreferrer"
+                            aria-label="Besuchen Sie uns auf Instagram">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 2.982c2.937 0 3.285.011 4.445.064a6.087 6.087 0 0 1 2.042.379 3.408 3.408 0 0 1 1.265.823 3.408 3.408 0 0 1 .823 1.265 6.087 6.087 0 0 1 .379 2.042c.053 1.16.064 1.508.064 4.445s-.011 3.285-.064 4.445a6.087 6.087 0 0 1-.379 2.042 3.643 3.643 0 0 1-2.088 2.088 6.087 6.087 0 0 1-2.042.379c-1.16.053-1.508.064-4.445.064s-3.285-.011-4.445-.064a6.087 6.087 0 0 1-2.043-.379 3.408 3.408 0 0 1-1.264-.823 3.408 3.408 0 0 1-.823-1.265 6.087 6.087 0 0 1-.379-2.042c-.053-1.16-.064-1.508-.064-4.445s.011-3.285.064-4.445a6.087 6.087 0 0 1 .379-2.042 3.408 3.408 0 0 1 .823-1.265 3.408 3.408 0 0 1 1.265-.823 6.087 6.087 0 0 1 2.042-.379c1.16-.053 1.508-.064 4.445-.064M12 1c-2.987 0-3.362.013-4.535.066a8.074 8.074 0 0 0-2.67.511 5.392 5.392 0 0 0-1.949 1.27 5.392 5.392 0 0 0-1.269 1.948 8.074 8.074 0 0 0-.51 2.67C1.012 8.638 1 9.013 1 12s.013 3.362.066 4.535a8.074 8.074 0 0 0 .511 2.67 5.392 5.392 0 0 0 1.27 1.949 5.392 5.392 0 0 0 1.948 1.269 8.074 8.074 0 0 0 2.67.51C8.638 22.988 9.013 23 12 23s3.362-.013 4.535-.066a8.074 8.074 0 0 0 2.67-.511 5.625 5.625 0 0 0 3.218-3.218 8.074 8.074 0 0 0 .51-2.67C22.988 15.362 23 14.987 23 12s-.013-3.362-.066-4.535a8.074 8.074 0 0 0-.511-2.67 5.392 5.392 0 0 0-1.27-1.949 5.392 5.392 0 0 0-1.948-1.269 8.074 8.074 0 0 0-2.67-.51C15.362 1.012 14.987 1 12 1Zm0 5.351A5.649 5.649 0 1 0 17.649 12 5.649 5.649 0 0 0 12 6.351Zm0 9.316A3.667 3.667 0 1 1 15.667 12 3.667 3.667 0 0 1 12 15.667Zm5.872-10.859a1.32 1.32 0 1 0 1.32 1.32 1.32 1.32 0 0 0-1.32-1.32Z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+    
+                <hr class="footer-divider">
+    
+                <div class="footer-bottom">
+                    <div class="footer-copyright">
+                        <p>© 2025 Navira Bau GmbH ― Alle Rechte vorbehalten</p>
+                    </div>
+                    <div class="footer-links">
+                        <nav>
+                            <a href="#">Impressum</a>
+                            <a href="#">Datenschutzerklärung</a>
+                            <a href="#:">AGB</a>
+                            <a href="#:">Cookie-Einstellungen</a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script>
         // JavaScript for orchestrating animations and scroll effects
@@ -1006,6 +1132,23 @@
                 // Toggle aria-expanded attribute for accessibility
                 const isExpanded = menuToggle.classList.contains('active'); // Check based on 'active' class
                 menuToggle.setAttribute('aria-expanded', isExpanded);
+            });
+            
+            // Add click listener to the whole document to close the menu
+            document.addEventListener('click', (event) => {
+                const isMenuOpen = sideMenu.classList.contains('show');
+                // Check if the click was on the toggle button or one of its children
+                const isClickOnToggle = menuToggle.contains(event.target);
+                // Check if the click was inside the menu panel or one of its children
+                const isClickInMenu = sideMenu.contains(event.target);
+
+                // If the menu is open AND the click was NOT on the toggle button AND NOT inside the menu
+                if (isMenuOpen && !isClickOnToggle && !isClickInMenu) {
+                    // Close the menu
+                    sideMenu.classList.remove('show');
+                    menuToggle.classList.remove('active');
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                }
             });
         });
     </script>
