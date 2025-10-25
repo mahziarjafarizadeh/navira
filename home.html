@@ -699,11 +699,17 @@
 
             /* Adjust logo size for mobile */
             #logo-container {
-                width: 190%;
+                width: 95%;
                 height: auto;
-                left: -44%;
-                transform: translate(0%, -50%);
-                top: 33%;
+                left: 50%;
+                transform: translate(-50%, -40%) translateY(-50px);
+                top: 50%;
+            }
+
+            #logo-container.visible {
+                opacity: 1;
+                transform: translate(-50%, -40%);
+                filter: blur(0);
             }
 
             #logo-svg {
@@ -712,7 +718,8 @@
             }
 
             #slogan {
-                font-size: 1.25em;
+                font-size: 0.75em;
+                margin-top: 60%;
             }
 
             #intro-section {
